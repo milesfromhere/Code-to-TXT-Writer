@@ -4,15 +4,20 @@ import os
 project_root = r"C:\путь"  # <-- Путь к проекту
 output_file = r"C:\путь"  # <-- Выходной файл
 
-# Расширения файлов, которые будем учитывать (можно добавить или убрать по необходимости)
-target_extensions = {'.cs', '.xaml', '.xml', 'xaml.cs'}
+# Включаемые расширения 
+included_extensions = {'.cs', '.xaml','xaml.cs' , '.xml'}
+
+# Исключаемые расширения
+excluded_suffixes = {'.g.cs', '.designer.cs', '.AssemblyInfo.cs'}
 
 with open(output_file, 'w', encoding='utf-8') as out_file:
     for root, _, files in os.walk(project_root):
         for file in files:
             file_path = os.path.join(root, file)
             _, ext = os.path.splitext(file)
-            if ext.lower() in target_extensions:
+            if ext.lower() in included_extensions:
+                if any(file.endswith(suffix) for suffix in excluded_suffixes):
+                    continue
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:
                         out_file.write(f"\n--- FILE: {file_path} ---\n")
